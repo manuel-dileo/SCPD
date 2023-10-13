@@ -14,10 +14,55 @@ import math
 
 DAY_LEN = 86400
 
+from datetime import datetime, timedelta
+
+def date_in_range(days_from_april_1):
+    # Set the start date to April 1, 2022
+    start_date = datetime(2022, 4, 1)
+    
+    # Calculate the target date by adding the given number of days to the start date
+    target_date = start_date + timedelta(days=days_from_april_1)
+    
+    # Check if the target date is within the specified range (April 1, 2022 - November 1, 2022)
+    end_date = datetime(2022, 11, 1)
+    if start_date <= target_date <= end_date:
+        return target_date
+    else:
+        return None
+
+def get_trends():
+    trends = [1 for i in range(0,coin_loader.days_from_april_1('05-05-22'))] +\
+        [0 for i in range(coin_loader.days_from_april_1('06-05-22'), coin_loader.days_from_april_1('25-05-22'))]+\
+        [1 for i in range(coin_loader.days_from_april_1('26-05-22'), coin_loader.days_from_april_1('09-06-22'))]+\
+        [0 for i in range(2)] +\
+        [1 for i in range(coin_loader.days_from_april_1('12-06-22'), coin_loader.days_from_april_1('06-08-22'))] +\
+        [0 for i in range(coin_loader.days_from_april_1('07-08-22'), coin_loader.days_from_april_1('29-08-22'))] +\
+        [1,1] + [0,0,0] + [1] + [0,0,0] + [1,1] + [0] + [1] +\
+        [0 for i in range(coin_loader.days_from_april_1('12-09-22'), coin_loader.days_from_april_1('26-09-22'))]+\
+        [1 for i in range(coin_loader.days_from_april_1('27-09-22'), 181)]
+    return trends
+
+def days_from_april_1(date_string):
+    # Convert the input date string to a datetime object
+    try:
+        input_date = datetime.strptime(date_string, "%d-%m-%y")
+    except ValueError:
+        return None  # Return None for invalid date strings
+    
+    # Set the reference date (April 1, 2022)
+    reference_date = datetime(2022, 4, 1)
+    
+    # Calculate the number of days between the input date and the reference date
+    delta = input_date - reference_date
+    if delta.days >= 0:
+        return delta.days
+    else:
+        return None  # Return None if the input date is before April 1, 2022
+
 '''
 treat each day as a discrete time stamp
 '''
-def load_temporarl_edgelist(fname, draw=False):
+def load_temporal_edgelist(fname, draw=False):
     edgelist = open(fname, "r")
     lines = list(edgelist.readlines())
     edgelist.close()
@@ -29,7 +74,7 @@ def load_temporarl_edgelist(fname, draw=False):
     G_times = []
     G = nx.Graph()
 
-    for i in range(0, len(lines)):
+    for i in range(1, len(lines)):
         line = lines[i]
         values = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+",line)
         t = int(values[0])
@@ -348,11 +393,6 @@ def parse_daily_graphs(fname):
     G_times.append(G)
     print ("maximum time stamp is " + str(len(G_times)))
     return G_times
-
-
-
-
-
 
 def main():
 

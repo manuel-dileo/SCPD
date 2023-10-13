@@ -8,7 +8,7 @@ import re
 '''
 treat each day as a discrete time stamp
 '''
-def load_temporarl_edgelist(fname, max_nodes=-1):
+def load_temporal_edgelist(fname, max_nodes=-1):
 	edgelist = open(fname, "r")
 	lines = list(edgelist.readlines())
 	edgelist.close()
